@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:notes_app/screens/note_list.dart';
-import 'package:notes_app/global.dart' as g;
+import 'package:notes_app/audio/home.dart';
+//void main() {
+//  runApp(MyApp3());
+//}
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-
+class MyApp3 extends StatelessWidget {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    //print("main");
-    //print(g.scheduledTime);
-
     return MaterialApp(
-      title: 'NoteKeeper',
       debugShowCheckedModeBanner: false,
+      title: 'NoteKeeper',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
         textTheme: TextTheme(
@@ -41,7 +36,9 @@ class MyApp extends StatelessWidget {
               fontSize: 14),
         ),
       ),
-      home: NoteList(),
+      home: HomePage(
+        title: 'Audio Notes',
+      ),
     );
   }
 }

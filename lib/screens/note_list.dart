@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:notes_app/db_helper/db_helper.dart';
+import 'package:notes_app/main.dart';
 import 'package:notes_app/modal_class/notes.dart';
 import 'package:notes_app/screens/note_detail.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -8,6 +9,10 @@ import 'package:notes_app/screens/search_note.dart';
 import 'package:notes_app/utils/widgets.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'package:notes_app/Doodle/draw.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:notes_app/global.dart' as g;
+import 'package:notes_app/audio/audio_start.dart';
 class NoteList extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -23,6 +28,8 @@ class NoteListState extends State<NoteList> {
 
   @override
   Widget build(BuildContext context) {
+    print("menu");
+    print(g.scheduledTime);
     if (noteList == null) {
       noteList = [];
       updateListView();
@@ -37,32 +44,32 @@ class NoteListState extends State<NoteList> {
         leading: noteList.length == 0
             ? Container()
             : IconButton(
-                icon: Icon(
-                  Icons.search,
-                  color: Colors.black,
-                ),
-                onPressed: () async {
-                  final Note result = await showSearch(
-                      context: context, delegate: NotesSearch(notes: noteList));
-                  if (result != null) {
-                    navigateToDetail(result, 'Edit Note');
-                  }
-                },
-              ),
+          icon: Icon(
+            Icons.search,
+            color: Colors.black,
+          ),
+          onPressed: () async {
+            final Note result = await showSearch(
+                context: context, delegate: NotesSearch(notes: noteList));
+            if (result != null) {
+              navigateToDetail(result, 'Edit Note');
+            }
+          },
+        ),
         actions: <Widget>[
           noteList.length == 0
               ? Container()
               : IconButton(
-                  icon: Icon(
-                    axisCount == 2 ? Icons.list : Icons.grid_on,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      axisCount = axisCount == 2 ? 4 : 2;
-                    });
-                  },
-                )
+            icon: Icon(
+              axisCount == 2 ? Icons.list : Icons.grid_on,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              setState(() {
+                axisCount = axisCount == 2 ? 4 : 2;
+              });
+            },
+          )
         ],
       );
     }
@@ -71,28 +78,79 @@ class NoteListState extends State<NoteList> {
       appBar: myAppBar(),
       body: noteList.length == 0
           ? Container(
-              color: Colors.white,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text('Click on the add button to add a new note!',
-                      style: Theme.of(context).textTheme.bodyText2),
-                ),
-              ),
-            )
+        color: Colors.white,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text('Click on the add button to add a new note!',
+                style: Theme.of(context).textTheme.bodyText2),
+          ),
+        ),
+      )
           : Container(
-              color: Colors.white,
-              child: getNotesList(),
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          navigateToDetail(Note('', '', 3, 0), 'Add Note');
-        },
-        tooltip: 'Add Note',
-        shape: CircleBorder(side: BorderSide(color: Colors.black, width: 2.0)),
-        child: Icon(Icons.add, color: Colors.black),
-        backgroundColor: Colors.white,
+        color: Colors.white,
+        child: getNotesList(),
       ),
+      floatingActionButton: SpeedDial(
+        //marginBottom: 10, //margin bottom
+        //icon: Icons.menu, //icon on Floating action button
+        //activeIcon: Icons.close, //icon when menu is expanded on button
+        animatedIcon: AnimatedIcons.menu_close,
+        animatedIconTheme: IconThemeData(size: 28.0),
+        backgroundColor: Colors.deepOrangeAccent, //background color of button
+        foregroundColor: Colors.white, //font color, icon color in button
+        activeBackgroundColor: Colors.deepPurpleAccent, //background color when menu is expanded
+        activeForegroundColor: Colors.white,
+        buttonSize: 56.0, //button size
+        visible: true,
+        //closeManually: false,
+        curve: Curves.bounceIn,
+        overlayColor: Colors.black,
+        overlayOpacity: 0.5,
+        onOpen: () => print('OPENING DIAL'), // action when menu opens
+        onClose: () => print('DIAL CLOSED'), //action when menu closes
+        elevation: 8.0, //shadow elevation of button
+        shape: CircleBorder(), //shape of button
+
+        children: [
+          SpeedDialChild( //speed dial child
+              child: Icon(Icons.notes),
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              label: 'Add Note',
+              labelStyle: TextStyle(fontSize: 18.0),
+              onTap: () {navigateToDetail(Note('', '', 3, 0), 'Add Note');
+              }
+            //onLongPress: () => print('FIRST CHILD LONG PRESS'),
+          ),
+          SpeedDialChild(
+              child: Icon(Icons.brush),
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              label: 'Add Doodle',
+              labelStyle: TextStyle(fontSize: 18.0),
+              onTap: () {Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyApp1()));
+              }
+            //onLongPress: () => print('SECOND CHILD LONG PRESS'),
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.keyboard_voice),
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.green,
+            label: 'Add Audio Note',
+            labelStyle: TextStyle(fontSize: 18.0),
+            onTap: () 
+            {Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyApp3()));
+              }
+            //onLongPress: () => print('THIRD CHILD LONG PRESS'),
+          ),
+          //add more menu item children here
+        ],
+      ),
+
+
     );
   }
 
@@ -131,7 +189,7 @@ class NoteListState extends State<NoteList> {
                       getPriorityText(this.noteList[index].priority),
                       style: TextStyle(
                           color:
-                              getPriorityColor(this.noteList[index].priority)),
+                          getPriorityColor(this.noteList[index].priority)),
                     ),
                   ],
                 ),
