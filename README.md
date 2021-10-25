@@ -11,3 +11,22 @@
 <li>Staggered GridView for Notes</li>
 
 </ul>
+
+# Screenshots:
+## App Icon:
+![Image](https://github.com/Madhan-Kumar22/Notes-app/blob/master/Screenshots/App_Icon.jpg)
+
+## Dashboard (Grid View):
+![Image](https://github.com/Madhan-Kumar22/Notes-app/blob/master/Screenshots/Dashboard_Grid.jpg)
+
+## Dashboard (List View):
+![Image](https://github.com/Madhan-Kumar22/Notes-app/blob/master/Screenshots/Dashboard_List.jpg)
+
+## App Icon:
+![Image](https://github.com/Madhan-Kumar22/Notes-app/blob/master/Screenshots/App_Icon.jpg)
+
+## App Icon:
+![Image](https://github.com/Madhan-Kumar22/Notes-app/blob/master/Screenshots/App_Icon.jpg)
+
+## App Icon:
+![Image](https://github.com/Madhan-Kumar22/Notes-app/blob/master/Screenshots/App_Icon.jpg)
