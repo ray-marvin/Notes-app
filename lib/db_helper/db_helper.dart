@@ -22,7 +22,7 @@ class DatabaseHelper {
   factory DatabaseHelper() {
     if (_databaseHelper == null) {
       _databaseHelper = DatabaseHelper
-          ._createInstance(); // This is executed only once, singleton object
+          ._createInstance(); // This is executed only once (singleton object)
     }
     return _databaseHelper;
   }
@@ -103,6 +103,9 @@ class DatabaseHelper {
     for (int i = 0; i < count; i++) {
       noteList.add(Note.fromMapObject(noteMapList[i]));
     }
+
+
+
 
     return noteList;
   }
