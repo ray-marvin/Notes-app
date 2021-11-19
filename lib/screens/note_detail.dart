@@ -6,6 +6,8 @@ import 'package:notes_app/utils/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:notes_app/global.dart' as g;
+import 'dart:io';
+import 'dart:async';
 
 var stime;
 
@@ -25,14 +27,14 @@ class NoteDetailState extends State<NoteDetail> {
   DatabaseHelper helper = DatabaseHelper();
 
   FlutterLocalNotificationsPlugin fltrNotification;
-
+  File imageFile1,imageFile;
   @override
   void initState() {
     super.initState();
     var androidInitilize = new AndroidInitializationSettings('icon');
     var iOSinitilize = new IOSInitializationSettings();
     var initilizationsSettings =
-        new InitializationSettings(androidInitilize, iOSinitilize);
+    new InitializationSettings(androidInitilize, iOSinitilize);
     fltrNotification = new FlutterLocalNotificationsPlugin();
     fltrNotification.initialize(initilizationsSettings,
         onSelectNotification: notificationSelected);
@@ -93,9 +95,12 @@ class NoteDetailState extends State<NoteDetail> {
             )
           ],
         ),
-        body: Container(
-          color: colors[color],
-          child: Column(
+        body: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(),
+            child: Container(
+              color: colors[color],
+              child: Column(
             children: <Widget>[
               PriorityPicker(
                 selectedIndex: 3 - note.priority,
@@ -114,6 +119,8 @@ class NoteDetailState extends State<NoteDetail> {
                   note.color = index;
                 },
               ),
+
+
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: TextField(
@@ -128,7 +135,7 @@ class NoteDetailState extends State<NoteDetail> {
                   ),
                 ),
               ),
-              Expanded(
+              SizedBox.fromSize(
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
                   child: TextField(
@@ -145,6 +152,10 @@ class NoteDetailState extends State<NoteDetail> {
                     ),
                   ),
                 ),
+              ),
+
+              Container(
+                height: 150.0,
               ),
               Column(children: <Widget>[
                 Text('Remind Me on (${format.pattern})'),
@@ -175,14 +186,17 @@ class NoteDetailState extends State<NoteDetail> {
                       return g.scheduledTime;
                     }
                   },
-                ), 
+                ),
               ]),
+
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: RaisedButton(
                     onPressed: _showNotification, child: Text("Set Reminder")),
               ),
             ],
+          ),
+        ),
           ),
         ),
       ),
@@ -195,7 +209,7 @@ class NoteDetailState extends State<NoteDetail> {
         importance: Importance.Max);
     var iSODetails = new IOSNotificationDetails();
     var generalNotificationDetails =
-        new NotificationDetails(androidDetails, iSODetails);
+    new NotificationDetails(androidDetails, iSODetails);
 
     // await fltrNotification.show(
     //     0, "Task", "You created a Task",
@@ -207,8 +221,8 @@ class NoteDetailState extends State<NoteDetail> {
     print("in notif widget");
     print(g.scheduledTime);
     fltrNotification.schedule(
-        1, "Reminder", note.title, stime, generalNotificationDetails);
-        //
+        note.id, "Reminder", note.title, stime, generalNotificationDetails);
+    //
   }
 
   Future notificationSelected(String payload) async {
@@ -219,6 +233,13 @@ class NoteDetailState extends State<NoteDetail> {
       ),
     );
   }
+  ///////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////////
+
+
 
   void showDiscardDialog(BuildContext context) {
     showDialog(
